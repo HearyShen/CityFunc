@@ -1,4 +1,6 @@
 import os
+import random
+import shutil
 
 dataset_root = r"D:\Datasets\CityFunc"
 train_image_root = os.path.join(dataset_root, "train", "image")
@@ -8,22 +10,33 @@ val_visit_root = os.path.join(dataset_root, "val", "visit")
 test_image_root = os.path.join(dataset_root, "test", "image")
 test_visit_root = os.path.join(dataset_root, "test", "visit")
 
-img_with_visit = set()
-img_without_visit = set()
+
+os.makedirs(val_visit_root)
+os.makedirs(test_visit_root)
+val_count = 0
+test_count = 0
 
 for classdir in os.listdir(train_image_root):
     class_root = os.path.join(train_image_root, classdir)
     print("entering " + class_root)
+    os.makedirs(os.path.join(val_image_root, classdir))
+    os.makedirs(os.path.join(test_image_root, classdir))
     for img in os.listdir(class_root):
         img_name = os.path.splitext(img)[0]
-        if os.path.exists(os.path.join(train_visit_root, img_name+".txt")):
-            img_with_visit.add(img_name)
-        else:
-            img_without_visit.add(img_name)
+        img_path = os.path.join(class_root, img)
+        visit_path = os.path.join(train_visit_root, img_name+".txt")
+        rand = random.random()
+        if rand >= 0.8:
+            if rand < 0.9:      # move to val set
+                img_dest_path = os.path.join(val_image_root, classdir, img)
+                visit_dest_path = os.path.join(val_visit_root, img_name+".txt")
+                val_count += 1
+            else:                   # move to test set
+                img_dest_path = os.path.join(test_image_root, classdir, img)
+                visit_dest_path = os.path.join(test_visit_root, img_name+".txt")
+                test_count += 1
+            
+            shutil.move(img_path, img_dest_path)
+            shutil.move(visit_path, visit_dest_path)
 
-print("Images with visit text:")
-print("Total: " + str(len(img_with_visit)))
-# print(sorted(img_with_visit))
-
-print("Images without visit text:")
-print("Total: " + str(len(img_without_visit)))
+print("train/val/test: %d/%d/%d" % (40000 - val_count - test_count, val_count, test_count))

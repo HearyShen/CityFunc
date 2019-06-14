@@ -50,16 +50,16 @@ parser.add_argument(
 parser.add_argument(
     '-b',
     '--batch-size',
-    default=4,
+    default=64,
     type=int,
     metavar='N',
-    help='mini-batch size (default: 4), this is the total '
+    help='mini-batch size (default: 64), this is the total '
     'batch size of all GPUs on the current node when '
     'using Data Parallel or Distributed Data Parallel')
 parser.add_argument(
     '--lr',
     '--learning-rate',
-    default=0.1,
+    default=0.01,
     type=float,
     metavar='LR',
     help='initial learning rate',
@@ -128,10 +128,17 @@ parser.add_argument(
     'N processes per node, which has N GPUs. This is the '
     'fastest way to use PyTorch for either single node or '
     'multi node data parallel training')
+parser.add_argument('--work-dir', default=None, type=str, metavar='DIR', help='work directory for checkpoint and logs output')
+parser.add_argument('--num-classes', default=1000, type=int, help='number of classes to classify')
 
 
 def main():
     args = parser.parse_args()
+
+    if args.work_dir is not None:
+        if not os.path.exists(args.work_dir):
+            os.makedirs(args.work_dir)
+        os.chdir(args.work_dir)
 
     if args.seed is not None:
         random.seed(args.seed)
