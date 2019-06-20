@@ -12,11 +12,11 @@ class AutoFitNet(nn.Module):
         else:
             print("=> creating model '{}'".format(arch))
             self.model = models.__dict__[arch]()
-        self.fc1 = nn.Linear(1000, num_classes)
+
+        
 
     def forward(self, x):
         x = self.model(x)
-        x = self.fc1(x)
 
         return x
     
