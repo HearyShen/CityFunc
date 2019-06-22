@@ -29,9 +29,13 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
         # measure accuracy and record loss
         acc1, acc3 = accuracy(output, target, topk=(1, 3))
-        losses.update(loss.item(), input.size(0))
-        top1.update(acc1[0], input.size(0))
-        top3.update(acc3[0], input.size(0))
+        # TODO: fix the size(0) bug
+        # losses.update(loss.item(), input.size(0))
+        # top1.update(acc1[0], input.size(0))
+        # top3.update(acc3[0], input.size(0))
+        losses.update(loss.item(), 4)
+        top1.update(acc1[0], 4)
+        top3.update(acc3[0], 4)
 
         # compute gradient and do SGD step
         optimizer.zero_grad()

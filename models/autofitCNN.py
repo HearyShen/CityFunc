@@ -31,12 +31,14 @@ class VisitFitNet(nn.Module):
 
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        self.conv3 = nn.Conv2d(64, 128, 3, stride=1, padding=1)
+        self.downsample128 = nn.Conv2d(64, 128, 1, stride=1, padding=0)
+        self.conv3 = nn.Conv2d(128, 128, 3, stride=1, padding=1)
         self.bn3 = nn.BatchNorm2d(128)
         self.conv4 = nn.Conv2d(128, 128, 3, stride=1, padding=1)
         self.bn4 = nn.BatchNorm2d(128)
         
-        self.conv5 = nn.Conv2d(128, 256, 3, stride=1, padding=1)
+        self.downsample256 = nn.Conv2d(128, 256, 1, stride=1, padding=0)
+        self.conv5 = nn.Conv2d(256, 256, 3, stride=1, padding=1)
         self.bn5 = nn.BatchNorm2d(256)
         self.conv6 = nn.Conv2d(256, 256, 3, stride=1, padding=1)
         self.bn6 = nn.BatchNorm2d(256)
@@ -59,6 +61,8 @@ class VisitFitNet(nn.Module):
         out = self.relu(out)
         out = self.maxpool(out) # out: batch_size×64×4×13
 
+        out = self.downsample128(out)
+
         identity = out
         out = self.conv3(out)
         out = self.bn3(out)
@@ -68,6 +72,8 @@ class VisitFitNet(nn.Module):
         out += identity
         out = self.relu(out)
         out = self.maxpool(out) # out: batch_size×128×3×8
+
+        out = self.downsample256(out)
 
         identity = out
         out = self.conv5(out)
