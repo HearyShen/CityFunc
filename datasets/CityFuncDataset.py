@@ -1,3 +1,4 @@
+import torch
 from torch.utils.data import Dataset
 import torchvision
 import torchvision.transforms as transforms
@@ -59,7 +60,8 @@ class CityFuncDataset(Dataset):
         else:
             visit = self.visit2array(visit_path)    # a 7×26×24 numpy matrix
             np.save(visit_numpy_cache_path, visit)
-        visit = transforms.ToTensor()(visit)      # a 24×7×26 tensor
+        visit = transforms.ToTensor()(visit).float()      # a 24×7×26 tensor
+        # visit = torch.from_numpy(visit.transpose(2,1,0)).float()
         
         # label
         label = int(class_label) - 1    # label in PyTorch starts from 0 (rather than 1)

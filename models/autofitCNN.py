@@ -21,7 +21,9 @@ class ImageFitNet(nn.Module):
 class VisitFitNet(nn.Module):
     def __init__(self):
         super(VisitFitNet, self).__init__()
-        self.conv1 = nn.Conv2d(24, 64, 3, stride=1, padding=1)
+        self.conv0 = nn.Conv2d(24, 64, 3, stride=1, padding=1)
+
+        self.conv1 = nn.Conv2d(64, 64, 3, stride=1, padding=1)
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(inplace=True)
         self.conv2 = nn.Conv2d(64, 64, 3, stride=1, padding=1)
@@ -44,9 +46,10 @@ class VisitFitNet(nn.Module):
         self.fc = nn.Linear(256, 256)
 
     def forward(self, x):
-        identity = x            # x: batch_size×24×7×26
+        out = self.conv0(x) # x: batch_size×24×7×26
+        identity = out      # out: batch_size×64×7×26
 
-        out = self.conv1(x)
+        out = self.conv1(out)
         out = self.bn1(out)
         out = self.relu(out)
 
@@ -54,7 +57,7 @@ class VisitFitNet(nn.Module):
         out = self.bn2(out)
         out += identity
         out = self.relu(out)
-        out = self.maxpool(out) # out: batch_size×64×4×14
+        out = self.maxpool(out) # out: batch_size×64×4×13
 
         identity = out
         out = self.conv3(out)
