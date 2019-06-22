@@ -53,7 +53,12 @@ class CityFuncDataset(Dataset):
 
         # visit
         visit_path = os.path.join(self.visit_root, visit_filename)
-        visit = self.visit2array(visit_path)    # a 7×26×24 numpy matrix
+        visit_numpy_cache_path = os.path.join(self.visit_root, os.path.splitext(visit_filename)[0]+".npy")
+        if os.path.exists(visit_numpy_cache_path):
+            visit = np.load(visit_numpy_cache_path)
+        else:
+            visit = self.visit2array(visit_path)    # a 7×26×24 numpy matrix
+            np.save(visit_numpy_cache_path, visit)
         visit = transforms.ToTensor()(visit)      # a 24×7×26 tensor
         
         # label
