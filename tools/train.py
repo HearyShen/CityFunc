@@ -33,9 +33,9 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
         # losses.update(loss.item(), input.size(0))
         # top1.update(acc1[0], input.size(0))
         # top3.update(acc3[0], input.size(0))
-        losses.update(loss.item(), 4)
-        top1.update(acc1[0], 4)
-        top3.update(acc3[0], 4)
+        losses.update(loss.item(), args.batch_size)
+        top1.update(acc1[0], args.batch_size)
+        top3.update(acc3[0], args.batch_size)
 
         # compute gradient and do SGD step
         optimizer.zero_grad()

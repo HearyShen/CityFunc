@@ -32,9 +32,13 @@ def validate(val_loader, model, criterion, args):
 
             # measure accuracy and record loss
             acc1, acc3 = accuracy(output, target, topk=(1, 3))
-            losses.update(loss.item(), input.size(0))
-            top1.update(acc1[0], input.size(0))
-            top3.update(acc3[0], input.size(0))
+            # TODO: fix the size(0) bug
+            # losses.update(loss.item(), input.size(0))
+            # top1.update(acc1[0], input.size(0))
+            # top3.update(acc3[0], input.size(0))
+            losses.update(loss.item(), args.batch_size)
+            top1.update(acc1[0], args.batch_size)
+            top3.update(acc3[0], args.batch_size)
 
             # measure elapsed time
             batch_time.update(time.time() - end)
